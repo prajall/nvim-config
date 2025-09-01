@@ -13,7 +13,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 vim.opt.clipboard = 'unnamedplus'
-vim.opt.cmdheight = 0
+--vim.opt.cmdheight = 0
 vim.opt.guifont = 'JetBrainsMono Nerd Font Light:h12'
 
 -- Set up plugins

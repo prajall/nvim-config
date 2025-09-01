@@ -73,6 +73,20 @@ return {
         -- or a suggestion from your LSP for this to activate.
         map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
+        -- Enhanced code actions for auto-import
+        map('<leader>ci', function()
+          vim.lsp.buf.code_action({
+            filter = function(action)
+              return action.title and (
+                action.title:match('[Ii]mport') or 
+                action.title:match('[Aa]dd.*import') or
+                action.title:match('[Ff]ix.*import')
+              )
+            end,
+            apply = true, -- Auto-apply if only one action
+          })
+        end, '[C]ode [I]mport Action')
+
         -- WARN: This is not Goto Definition, this is Goto Declaration.
         --  For example, in C this would take you to the header.
         map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -130,7 +144,30 @@ return {
     -- - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
     -- - settings (table): Override the default settings passed when initializing the server.
     local servers = {
-      ts_ls = {},
+      ts_ls = {
+        settings = {
+          typescript = {
+            suggest = {
+              includeCompletionsForModuleExports = true,
+              includeCompletionsForImportStatements = true,
+            },
+            preferences = {
+              includePackageJsonAutoImports = 'auto',
+              importModuleSpecifier = 'relative',
+            },
+          },
+          javascript = {
+            suggest = {
+              includeCompletionsForModuleExports = true,
+              includeCompletionsForImportStatements = true,
+            },
+            preferences = {
+              includePackageJsonAutoImports = 'auto',
+              importModuleSpecifier = 'relative',
+            },
+          },
+        },
+      },
       ruff = {},
       pylsp = {
         settings = {
