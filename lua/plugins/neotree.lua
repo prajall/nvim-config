@@ -305,5 +305,15 @@ return {
     vim.cmd [[nnoremap ; :Neotree reveal<cr>]]
     vim.keymap.set('n', '<leader>e', ':Neotree toggle position=left<CR>', { noremap = true, silent = true }) -- focus file explorer
     vim.keymap.set('n', '<leader>ngs', ':Neotree float git_status<CR>', { noremap = true, silent = true }) -- open git status window
+
+    -- -- 🔹 Open Neo-tree when Neovim starts (only if no file is passed)
+    -- vim.api.nvim_create_autocmd('VimEnter', {
+    --   callback = function()
+    --     -- check if no file args were passed (so it won't block editing a specific file)
+    --     if vim.fn.argc() == 0 then
+    --       vim.cmd 'Neotree show left'
+    --     end
+    --   end,
+    -- })
   end,
 }

@@ -1,4 +1,6 @@
 -- Set leader key
+
+local opts = { noremap = true, silent = true }
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -42,8 +44,22 @@ vim.keymap.set('n', '<Right>', ':vertical resize +2<CR>', opts)
 
 vim.keymap.set('n', '<leader>bn', ':bnext<CR>', opts) -- next buffer
 vim.keymap.set('n', '<leader>bp', ':bprevious<CR>', opts) -- previous buffer
-vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', opts) -- close buffer
-vim.keymap.set('n', '<leader>bt', ':b#<CR>', opts) -- toggle last buffer
+vim.keymap.set('n', '<Tab>', ':b#<CR>', opts) -- toggle last buffer
+
+vim.keymap.set('n', '<leader>bd', function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local alternate = vim.fn.bufnr("#")
+  local next_buf = vim.fn.bufnr("n")
+
+  if vim.api.nvim_buf_is_valid(alternate) and vim.bo[alternate].buflisted then
+    vim.cmd("buffer #")
+  elseif vim.api.nvim_buf_is_valid(next_buf) and vim.bo[next_buf].buflisted then
+    vim.cmd("bnext")
+  end
+
+  vim.cmd("bdelete " .. bufnr)
+end, opts)
+
 
 -- Window management
 vim.keymap.set('n', '<leader>v', '<w>v', opts) -- split window vertically
