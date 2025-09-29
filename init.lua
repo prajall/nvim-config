@@ -13,8 +13,10 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 vim.opt.clipboard = 'unnamedplus'
---vim.opt.cmdheight = 0
+vim.opt.cmdheight = 0
 vim.opt.guifont = 'JetBrainsMono Nerd Font Light:h12'
+vim.opt.cursorline = true
+vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2d3748' })
 
 -- Set up plugins
 require('lazy').setup {
@@ -36,3 +38,4 @@ require('lazy').setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.keymap.set('i', 'jj', '<Esc>')

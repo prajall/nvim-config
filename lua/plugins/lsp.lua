@@ -75,16 +75,12 @@ return {
 
         -- Enhanced code actions for auto-import
         map('<leader>ci', function()
-          vim.lsp.buf.code_action({
+          vim.lsp.buf.code_action {
             filter = function(action)
-              return action.title and (
-                action.title:match('[Ii]mport') or 
-                action.title:match('[Aa]dd.*import') or
-                action.title:match('[Ff]ix.*import')
-              )
+              return action.title and (action.title:match '[Ii]mport' or action.title:match '[Aa]dd.*import' or action.title:match '[Ff]ix.*import')
             end,
             apply = true, -- Auto-apply if only one action
-          })
+          }
         end, '[C]ode [I]mport Action')
 
         -- WARN: This is not Goto Definition, this is Goto Declaration.

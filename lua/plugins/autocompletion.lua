@@ -38,7 +38,7 @@ return { -- Autocompletion
     local cmp = require 'cmp'
     local luasnip = require 'luasnip'
     luasnip.config.setup {}
-    
+
     local kind_icons = {
       Text = '󰉿',
       Method = 'm',
@@ -74,16 +74,16 @@ return { -- Autocompletion
         cmp.abort()
       else
         -- Force completion to trigger
-        cmp.complete({
+        cmp.complete {
           config = {
             sources = {
               { name = 'nvim_lsp', priority = 1000 },
               { name = 'luasnip', priority = 750 },
               { name = 'buffer', priority = 500 },
               { name = 'path', priority = 250 },
-            }
-          }
-        })
+            },
+          },
+        }
       end
     end
 
@@ -93,10 +93,10 @@ return { -- Autocompletion
           luasnip.lsp_expand(args.body)
         end,
       },
-      completion = { 
+      completion = {
         completeopt = 'menu,menuone,noinsert',
         -- Make completion more responsive
-        keyword_length = 0,  -- Show completions immediately
+        keyword_length = 0, -- Show completions immediately
         get_trigger_characters = function()
           return { '.', ':', '(', '"', "'", '/', '\\' }
         end,
@@ -120,17 +120,17 @@ return { -- Autocompletion
         -- Accept ([y]es) the completion.
         --  This will auto-import if your LSP supports it.
         --  This will expand snippets if the LSP sent a snippet.
-        ['<C-y>'] = cmp.mapping.confirm { 
+        ['<C-y>'] = cmp.mapping.confirm {
           select = true,
           behavior = cmp.ConfirmBehavior.Insert,
         },
         -- Enhanced manual completion trigger (VS Code-like Ctrl+Space behavior)
         ['<leader>f'] = cmp.mapping(manual_complete, { 'i', 'n' }),
-        
+
         -- Alternative keybind for manual completion (Ctrl+Space equivalent)
         -- Uncomment if you want Ctrl+Space as well
         -- ['<C-Space>'] = cmp.mapping(manual_complete, { 'i', 'n' }),
-        
+
         -- Think of <c-l> as moving to the right of your snippet expansion.
         ['<C-l>'] = cmp.mapping(function()
           if luasnip.expand_or_locally_jumpable() then
@@ -142,7 +142,7 @@ return { -- Autocompletion
             luasnip.jump(-1)
           end
         end, { 'i', 's' }),
-        
+
         -- Enhanced Tab behavior
         ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -162,16 +162,16 @@ return { -- Autocompletion
             fallback()
           end
         end, { 'i', 's' }),
-        
+
         -- Enter to accept completion
         ['<CR>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            cmp.confirm({ select = true })
+            cmp.confirm { select = true }
           else
             fallback()
           end
         end, { 'i' }),
-        
+
         -- Escape to close completion menu
         ['<Esc>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -181,38 +181,38 @@ return { -- Autocompletion
           end
         end, { 'i' }),
       },
-      sources = cmp.config.sources({
+      sources = cmp.config.sources {
         {
           name = 'lazydev',
           -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
           group_index = 0,
         },
-        { 
+        {
           name = 'nvim_lsp',
           priority = 1000, -- Higher priority for LSP completions (includes auto-imports)
           keyword_length = 0, -- Show LSP completions immediately
         },
-        { 
+        {
           name = 'luasnip',
           priority = 750,
           keyword_length = 0,
         },
-        { 
+        {
           name = 'buffer',
           priority = 500,
           keyword_length = 1, -- Only show buffer completions after 1 character
           option = {
             get_bufnrs = function()
               return vim.api.nvim_list_bufs()
-            end
-          }
+            end,
+          },
         },
-        { 
+        {
           name = 'path',
           priority = 250,
           keyword_length = 0,
         },
-      }),
+      },
       formatting = {
         fields = { 'kind', 'abbr', 'menu' },
         format = function(entry, vim_item)
@@ -243,12 +243,12 @@ return { -- Autocompletion
     }
 
     -- Additional autocommand to ensure LSP completions work properly
-    vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+    vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('UserLspConfig', {}),
       callback = function(ev)
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-        
+
         -- Buffer local mappings for additional LSP features
         local opts = { buffer = ev.buf }
         vim.keymap.set('n', '<leader>F', function()

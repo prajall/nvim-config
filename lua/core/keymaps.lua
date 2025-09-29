@@ -48,18 +48,17 @@ vim.keymap.set('n', '<Tab>', ':b#<CR>', opts) -- toggle last buffer
 
 vim.keymap.set('n', '<leader>bd', function()
   local bufnr = vim.api.nvim_get_current_buf()
-  local alternate = vim.fn.bufnr("#")
-  local next_buf = vim.fn.bufnr("n")
+  local alternate = vim.fn.bufnr '#'
+  local next_buf = vim.fn.bufnr 'n'
 
   if vim.api.nvim_buf_is_valid(alternate) and vim.bo[alternate].buflisted then
-    vim.cmd("buffer #")
+    vim.cmd 'buffer #'
   elseif vim.api.nvim_buf_is_valid(next_buf) and vim.bo[next_buf].buflisted then
-    vim.cmd("bnext")
+    vim.cmd 'bnext'
   end
 
-  vim.cmd("bdelete " .. bufnr)
+  vim.cmd('bdelete ' .. bufnr)
 end, opts)
-
 
 -- Window management
 vim.keymap.set('n', '<leader>v', '<w>v', opts) -- split window vertically
@@ -100,6 +99,10 @@ end, { desc = 'Go to next diagnostic message' })
 
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+-- move selected line
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'moves lines down in visual selection' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'moves lines up in visual selection' })
 
 -- Auto-import keymaps (VS Code-like functionality)
 -- Quick auto-import - automatically imports the symbol under cursor
