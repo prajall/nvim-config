@@ -17,23 +17,27 @@ vim.opt.cmdheight = 0
 vim.opt.guifont = 'JetBrainsMono Nerd Font Light:h12'
 vim.opt.cursorline = true
 vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2d3748' })
+-- vim.opt.mouse = ''
+-- Hide top bufferline
+vim.opt.showtabline = 0 -- hides the tabline
+vim.opt.wrap = true
 
 -- Set up plugins
 require('lazy').setup {
   require 'plugins.neotree',
   require 'plugins.colortheme',
-  require 'plugins.bufferline',
+  -- require 'plugins.bufferline',
   require 'plugins.lualine',
   require 'plugins.treesitter',
   require 'plugins.telescope',
   require 'plugins.lsp',
   require 'plugins.autocompletion',
-  require 'plugins.none-ls',
   require 'plugins.gitsigns',
   require 'plugins.alpha',
   require 'plugins.indent-blankline',
   require 'plugins.misc',
   require 'plugins.comment',
+  require 'plugins.copilot',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
