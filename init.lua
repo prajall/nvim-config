@@ -22,6 +22,10 @@ vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2d3748' })
 vim.opt.showtabline = 0 -- hides the tabline
 vim.opt.wrap = true
 
+-- Remove relative line number
+vim.opt.number = true
+vim.opt.relativenumber = false
+
 -- Set up plugins
 require('lazy').setup {
   require 'plugins.neotree',
@@ -37,7 +41,10 @@ require('lazy').setup {
   require 'plugins.indent-blankline',
   require 'plugins.misc',
   require 'plugins.comment',
-  require 'plugins.copilot',
+  require 'plugins.mason',
+  require 'plugins.conform',
+  require 'plugins.harpoon',
+  require 'plugins.diffview',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

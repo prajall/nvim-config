@@ -30,7 +30,6 @@ return { -- Autocompletion
     --  nvim-cmp does not ship with all sources by default. They are split
     --  into multiple repos for maintenance purposes.
     'hrsh7th/cmp-nvim-lsp',
-    'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
   },
   config = function()
@@ -79,7 +78,7 @@ return { -- Autocompletion
             sources = {
               { name = 'nvim_lsp', priority = 1000 },
               { name = 'luasnip', priority = 750 },
-              { name = 'buffer', priority = 500 },
+              -- { name = 'buffer', priority = 500 },
               { name = 'path', priority = 250 },
             },
           },
@@ -197,16 +196,16 @@ return { -- Autocompletion
           priority = 750,
           keyword_length = 0,
         },
-        {
-          name = 'buffer',
-          priority = 500,
-          keyword_length = 1, -- Only show buffer completions after 1 character
-          option = {
-            get_bufnrs = function()
-              return vim.api.nvim_list_bufs()
-            end,
-          },
-        },
+        -- {
+        --   name = 'buffer',
+        --   priority = 500,
+        --   keyword_length = 1, -- Only show buffer completions after 1 character
+        --   option = {
+        --     get_bufnrs = function()
+        --       return vim.api.nvim_list_bufs()
+        --     end,
+        --   },
+        -- },
         {
           name = 'path',
           priority = 250,
@@ -220,7 +219,7 @@ return { -- Autocompletion
           vim_item.menu = ({
             nvim_lsp = '[LSP]',
             luasnip = '[Snippet]',
-            buffer = '[Buffer]',
+            -- buffer = '[Buffer]',
             path = '[Path]',
             lazydev = '[LazyDev]',
           })[entry.source.name]
