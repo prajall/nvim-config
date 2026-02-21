@@ -1,20 +1,8 @@
 return {
-  -- -- For Ruby
-  -- {
-  --     "adam12/ruby-lsp.nvim",
-  --     dependencies = {
-  --         "nvim-lua/plenary.nvim",
-  --         "neovim/nvim-lspconfig",
-  --     },
-  --     config = true,
-  -- },
-  -- -------------------------------------
-
   'neovim/nvim-lspconfig',
   event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
-    -- "saghen/blink.cmp",
     { 'antosha417/nvim-lsp-file-operations', config = true },
   },
   config = function()
@@ -28,49 +16,46 @@ return {
     })
 
     -- NOTE: LSP Keybinds
-
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('UserLspConfig', {}),
       callback = function(ev)
-        -- Buffer local mappings
-        -- Check `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf, silent = true }
 
         -- keymaps
         opts.desc = 'Show LSP references'
-        vim.keymap.set('n', 'gR', '<cmd>Telescope lsp_references<CR>', opts) -- show definition, references
+        vim.keymap.set('n', 'gR', '<cmd>Telescope lsp_references<CR>', opts)
 
         opts.desc = 'Go to declaration'
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts) -- go to declaration
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
 
         opts.desc = 'Show LSP definitions'
-        vim.keymap.set('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts) -- show lsp definitions
+        vim.keymap.set('n', 'gd', '<cmd>Telescope lsp_definitions<CR>', opts)
 
         opts.desc = 'Show LSP implementations'
-        vim.keymap.set('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts) -- show lsp implementations
+        vim.keymap.set('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
 
         opts.desc = 'Show LSP type definitions'
-        vim.keymap.set('n', 'gt', '<cmd>Telescope lsp_type_definitions<CR>', opts) -- show lsp type definitions
+        vim.keymap.set('n', 'gt', '<cmd>Telescope lsp_type_definitions<CR>', opts)
 
         opts.desc = 'See available code actions'
         vim.keymap.set({ 'n', 'v' }, '<leader>vca', function()
           vim.lsp.buf.code_action()
-        end, opts) -- see available code actions, in visual mode will apply to selection
+        end, opts)
 
         opts.desc = 'Smart rename'
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts) -- smart rename
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
 
         opts.desc = 'Show buffer diagnostics'
-        vim.keymap.set('n', '<leader>D', '<cmd>Telescope diagnostics bufnr=0<CR>', opts) -- show  diagnostics for file
+        vim.keymap.set('n', '<leader>D', '<cmd>Telescope diagnostics bufnr=0<CR>', opts)
 
         opts.desc = 'Show line diagnostics'
-        vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts) -- show diagnostics for line
+        vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
 
         opts.desc = 'Show documentation for what is under cursor'
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 
         opts.desc = 'Restart LSP'
-        vim.keymap.set('n', '<leader>rs', ':LspRestart<CR>', opts) -- mapping to restart lsp if necessary
+        vim.keymap.set('n', '<leader>rs', ':LspRestart<CR>', opts)
 
         vim.keymap.set('i', '<C-h>', function()
           vim.lsp.buf.signature_help()
@@ -78,7 +63,7 @@ return {
       end,
     })
 
-    --NOTE: Diagnostics toggle code added later using ChatGPT
+    -- Diagnostics toggle
     local diagnostics_enabled = true
     vim.keymap.set('n', '<leader>td', function()
       diagnostics_enabled = not diagnostics_enabled
@@ -93,37 +78,22 @@ return {
         print 'Diagnostics OFF'
       end
     end)
-    -- NOTE : Moved all this to Mason including local variables
-    -- used to enable autocompletion (assign to every lsp server config)
-    -- local capabilities = cmp_nvim_lsp.default_capabilities()
-    -- Change the Diagnostic symbols in the sign column (gutter)
 
-    -- Define sign icons for each severity
-
+    -- Diagnostic signs
     local signs = {
-      [vim.diagnostic.severity.ERROR] = ' ',
-      [vim.diagnostic.severity.WARN] = ' ',
+      [vim.diagnostic.severity.ERROR] = ' ',
+      [vim.diagnostic.severity.WARN] = ' ',
       [vim.diagnostic.severity.HINT] = '󰠠 ',
-      [vim.diagnostic.severity.INFO] = ' ',
+      [vim.diagnostic.severity.INFO] = ' ',
     }
 
-    -- Set the diagnostic config with all icons
     vim.diagnostic.config {
       signs = {
-        text = signs, -- Enable signs in the gutter
+        text = signs,
       },
-      virtual_text = true, -- Specify Enable virtual text for diagnostics
-      -- virtual_text = false, underline = true, -- Specify Underline diagnostics update_in_insert = false, -- Keep diagnostics active in insert mode
+      virtual_text = true,
     }
 
-    -- NOTE :
-    -- Moved back from mason_lspconfig.setup_handlers from mason.lua file
-    -- as mason setup_handlers is deprecated & its causing issues with lsp settings
-    --
-    -- Setup servers using vim.lsp.config (migrated from lspconfig)
-    -- Each server automatically starts when filetypes match and root_markers are found
-
-    -- Config lsp servers here
     -- lua_ls
     vim.lsp.config('lua_ls', {
       cmd = { 'lua-language-server' },
@@ -203,23 +173,20 @@ return {
       },
     })
 
-    -- ts_ls (replaces tsserver) - For Node.js/npm projects including Vue
+    -- ts_ls
     vim.lsp.config('ts_ls', {
       capabilities = capabilities,
       cmd = { 'typescript-language-server', '--stdio' },
       filetypes = {
         'javascript',
         'javascriptreact',
-        'javascript.jsx',
         'typescript',
         'typescriptreact',
-        'typescript.tsx',
         'vue',
       },
       root_markers = { 'tsconfig.json', 'package.json', 'jsconfig.json', '.git' },
       single_file_support = false,
       init_options = {
-
         plugins = {
           {
             name = '@vue/typescript-plugin',
@@ -227,7 +194,6 @@ return {
             languages = { 'vue' },
           },
         },
-
         preferences = {
           includeCompletionsWithSnippetText = true,
           includeCompletionsForImportStatements = true,
@@ -235,6 +201,7 @@ return {
       },
     })
 
+    -- tailwindcss
     vim.lsp.config('tailwindcss', {
       cmd = { 'tailwindcss-language-server', '--stdio' },
       filetypes = {
@@ -266,9 +233,9 @@ return {
       },
     })
 
-    -- pyright
-    vim.lsp.config('pyright', {
-      cmd = { 'pyright-langserver', '--stdio' },
+    -- pylsp (Python LSP Server)
+    vim.lsp.config('pylsp', {
+      cmd = { 'pylsp' },
       filetypes = { 'python' },
       root_markers = {
         'pyproject.toml',
@@ -280,41 +247,27 @@ return {
         '.git',
       },
       settings = {
-        python = {
-          -- Added later using ChatGPT -----------------------------------------------------------------
-          pythonPath = (function()
-            -- Try Poetry first
-            local poetry_venv = vim.fn.trim(vim.fn.system 'poetry env info -p 2>/dev/null')
-            if vim.v.shell_error == 0 and poetry_venv ~= '' then
-              return poetry_venv .. '/bin/python'
-            end
-
-            -- Try local venv
-            if vim.fn.executable 'venv/bin/python' == 1 then
-              return 'venv/bin/python'
-            end
-
-            -- Try .venv
-            if vim.fn.executable '.venv/bin/python' == 1 then
-              return '.venv/bin/python'
-            end
-
-            -- Fall back to system python
-            return vim.fn.exepath 'python3' or vim.fn.exepath 'python' or 'python'
-          end)(),
-          --------------------------------------------------------------------------------------------------
-          analysis = {
-            typeCheckingMode = 'basic', -- or "strict" if you want stricter checks
-            autoSearchPaths = true,
-            useLibraryCodeForTypes = true,
-            diagnosticMode = 'workspace', -- better for Django multi-file projects
-            extraPaths = { './', 'apps' }, -- optional: helpful if Django apps are in custom folders
+        pylsp = {
+          plugins = {
+            -- Linting
+            pylint = { enabled = true, executable = 'pylint' },
+            pyflakes = { enabled = false },
+            pycodestyle = { enabled = false },
+            -- Type checking
+            pylsp_mypy = { enabled = true },
+            -- Auto-completion
+            jedi_completion = { fuzzy = true },
+            -- Import sorting
+            pyls_isort = { enabled = true },
+            -- Formatting (if you want pylsp to format)
+            autopep8 = { enabled = false },
+            yapf = { enabled = false },
           },
         },
       },
     })
 
-    -- ruff
+    -- ruff (for fast linting and formatting)
     vim.lsp.config('ruff', {
       cmd = { 'ruff', 'server', '--preview' },
       filetypes = { 'python' },
@@ -335,24 +288,10 @@ return {
       },
     })
 
-    -- -- solargraph
-    -- vim.lsp.config('solargraph', {
-    --   capabilities = capabilities,
-    --   cmd = { 'solargraph', 'stdio' },
-    --   filetypes = { 'ruby' },
-    --   root_markers = { 'Gemfile', '.git' },
-    --   settings = {
-    --     solargraph = {
-    --       diagnostics = true,
-    --       completion = true,
-    --       formatting = true,
-    --     },
-    --   },
-    -- })
-    --
+    -- solargraph
     vim.lsp.config('solargraph', {
       capabilities = capabilities,
-      cmd = { 'bundle', 'exec', 'solargraph', 'stdio' }, -- Changed this line
+      cmd = { 'bundle', 'exec', 'solargraph', 'stdio' },
       filetypes = { 'ruby' },
       root_markers = { 'Gemfile', '.git' },
       settings = {
@@ -360,10 +299,12 @@ return {
           diagnostics = false,
           completion = true,
           formatting = false,
-          useBundler = true, -- Changed to true
+          useBundler = true,
         },
       },
-    }) -- vue-language-server (Vue Language Server) with proper TypeScript integration
+    })
+
+    -- vue_ls
     vim.lsp.config('vue_ls', {
       capabilities = capabilities,
       cmd = { 'vue-language-server', '--stdio' },
@@ -382,12 +323,12 @@ return {
           hybridMode = false,
         },
         typescript = {
-
           tsdk = vim.fn.stdpath 'data' .. '/mason/packages/typescript-language-server/node_modules/typescript/lib',
         },
       },
     })
 
+    -- html
     vim.lsp.config('html', {
       cmd = { 'vscode-html-language-server', '--stdio' },
       filetypes = { 'html', 'htmldjango' },
@@ -403,15 +344,14 @@ return {
       },
     })
 
-    -- NOTE: Enable all servers - they will auto-start based on filetypes and root_markers
-    -- REMOVED DENOLS from this list!
+    -- Enable all servers
     local servers = {
       'lua_ls',
       'emmet_ls',
       'emmet_language_server',
       'ts_ls',
       'tailwindcss',
-      'pyright',
+      'pylsp', -- Changed from 'pyright'
       'ruff',
       'solargraph',
       'vue_ls',
@@ -421,63 +361,5 @@ return {
     for _, server in ipairs(servers) do
       vim.lsp.enable(server)
     end
-
-    -- HACK: If using Blink.cmp Configure all LSPs here
-
-    -- ( comment the ones in mason )
-    -- local capabilities = require("blink.cmp").get_lsp_capabilities() -- Import capabilities from blink.cmp
-
-    -- Configure lua_ls
-    -- vim.lsp.config("lua_ls", {
-    --     cmd = { "lua-language-server" },
-    --     filetypes = { "lua" },
-    --     root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml", ".git" },
-    --     capabilities = capabilities,
-    --     settings = {
-    --         Lua = {
-    --             diagnostics = {
-    --                 globals = { "vim" },
-    --             },
-    --             completion = {
-    --                 callSnippet = "Replace",
-    --             },
-    --             workspace = {
-    --                 library = {
-    --                     [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-    --                     [vim.fn.stdpath("config") .. "/lua"] = true,
-    --                 },
-    --             },
-    --         },
-    --     },
-    -- })
-    --
-    -- -- Configure tsserver (TypeScript and JavaScript)
-    -- vim.lsp.config("ts_ls", {
-    --     cmd = { "typescript-language-server", "--stdio" },
-    --     filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-    --     root_markers = { "tsconfig.json", "package.json", "jsconfig.json", ".git" },
-    --     capabilities = capabilities,
-    --     single_file_support = false,
-    --     on_attach = function(client, bufnr)
-    --         -- Disable formatting if you're using a separate formatter like Prettier
-    --         client.server_capabilities.documentFormattingProvider = false
-    --     end,
-    --     init_options = {
-    --         preferences = {
-    --             includeCompletionsWithSnippetText = true,
-    --             includeCompletionsForImportStatements = true,
-    --         },
-    --     },
-    -- })
-
-    -- Add other LSP servers as needed, e.g., gopls, eslint, html, etc.
-    -- vim.lsp.config("gopls", { cmd = { "gopls" }, filetypes = { "go", "gomod", "gowork", "gotmpl" }, root_markers = { "go.work", "go.mod", ".git" } })
-    -- vim.lsp.config("html", { cmd = { "vscode-html-language-server", "--stdio" }, filetypes = { "html" }, root_markers = { ".git" } })
-    -- vim.lsp.config("cssls", { cmd = { "vscode-css-language-server", "--stdio" }, filetypes = { "css", "scss", "less" }, root_markers = { ".git" } })
-
-    -- Enable additional servers
-    -- vim.lsp.enable("gopls")
-    -- vim.lsp.enable("html")
-    -- vim.lsp.enable("cssls")
   end,
 }
